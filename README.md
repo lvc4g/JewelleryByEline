@@ -58,7 +58,7 @@ Cet effet permet à l'utilisateur de s'amuser à dessiner avec sa souris la bagu
 Cette carte attractive permet de mettre en avant le produit le plus commandé du mois et donc d'inciter les utilisateurs à commander pour être tendance.
 
 
-#### - POP UP ! :
+#### - Un POP UP ! :
 Cet effet informe l'utilisateur qu'il y a de belles soldes à ne pas manquer. Les soldes sont en réalité essentiellement constituées de produits invendus. Il permet donc encore d'inciter à la consommation mais cible les utilisateurs moins fortunés. Une partie du css du pop est affichée ci-dessous :
 
 ```css
