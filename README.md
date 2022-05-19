@@ -2,12 +2,12 @@
 ###### site NSI créé par 
 ### C'est un projet de boutique en ligne de bagues pour la marque Jewellery By Eline. 
 #### Le site contient 5 pages toutes différentes :
-##### - Acceuil :
+- Acceuil :
 sert à....
-##### - Femme :
-##### - Homme : 
-##### - Soldes :
-##### - Nous découvrir :
+- Femme :
+- Homme : 
+- Soldes :
+- Nous découvrir :
 
 ### Le site contient aussi plusieurs effets écrits en Javascript :
 #### - Un carrousel :
@@ -24,7 +24,11 @@ Cette barre de recherche est incomplète, en effet les différents articles n'on
 ```
 
 #### - L'affichage des tailles sur les bagues :
-Cet effet permet d'afficher les différentes tailles proposées (S/M/L). Il se produit lorsque la souris passe sur l'image d'un article. Lorsque cela arrive, l'image se grise et les tailles disponibles de l'article sont indiquées.
+Cet effet permet d'afficher les différentes tailles proposées (S/M/L). Il se produit lorsque la souris passe sur l'image d'un article. Lorsque cela arrive, l'image se grise et les tailles disponibles de l'article sont indiquées. Cela permet à l'utilisateur de voir directemnt si la taille qu'il porte est disponible.
+
+#### - Le tableau "à craie" :
+Cet effet permet à l'utilisateur de s'amuser à déssiner avec sa souris la bague de ses rêves (ou ce qu'il veut). Unique et ludique, cette fonctionnalité contribue à la relation client que souhaient avoir les deux créatrices. 
+
 ```js
 <div class="fadebox">
   <div class="title text">Taille en stock : S / M / L </div>
