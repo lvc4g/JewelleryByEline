@@ -5,8 +5,9 @@
 ### Ce projet doit répondre à plusieurs attentes :
 - Avoir une apparence comparable aux plus beaux sites d'e-commerce.
 - Comporter un bon nombre de fonctions javascript.
-- Représenter l'image de la marque déjà dévelopée sur instagram.
+- Représenter l'image de la marque déjà dévelopée sur instagram par les deux créatrices.
 - Être simple d'utilisation.
+- Comporter des éléments interactifs.
 ### Le site contient 5 pages :
 - Acceuil :
 C'est la page d'acceuil ou la page principale du site.
