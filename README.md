@@ -7,8 +7,7 @@ Ce projet doit répondre à plusieurs attentes :
 - Comporter un bon nombre de fonctions javascript.
 - Représenter l'image de la marque déjà dévelopée sur instagram.
 - Être simple d'utilisation.
-- 
-#### Le site contient 5 pages :
+### Le site contient 5 pages :
 - Acceuil :
 C'est la page d'acceuil ou la page principale du site.
 - Femme :
@@ -20,7 +19,7 @@ c'est la page comportant toutes les soldes.
 - Nous découvrir :
 C'est la page comportant des informations sur la marque avec notemment toute son histoire.
 
-### Le site contient aussi plusieurs effets écrits en Javascript :
+### Le site contient plusieurs effets écrits en Javascript :
 #### - Un carrousel : 
 Un carrousel est un type de module de site Web qui fait la rotation du contenu d'une manière similaire à celle d'un diaporama, soit par une commande de l'utilisateur ou par des transitions temporisées.
 
