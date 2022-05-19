@@ -17,7 +17,18 @@ Page comportant des informations sur la marque avec notemment toute son histoire
 #### - Un carrousel : 
 (ou type de module de site Web qui fait la rotation du contenu d'une manière similaire à celle d'un diaporama, soit par une commande de l'utilisateur ou par des transitions temporisées.)
 
-Il est utilisé pour prévisualiser l'ambiance du site et certains bijoux choisis.
+Il est utilisé pour prévisualiser l'ambiance du site et certains bijoux choisis. On trouve ci-dessous le début de l'html du carrousel :
+
+
+```html
+<div id="carrousel">
+	<div id="container">
+	</div>
+	<img src="bouton.png" class="bouton" id="d" />
+	<img src="bouton.png" class="bouton" id="g"/>
+</div>
+```
+
 
 #### - Une barre de recherche avec saisie semi-automatique :
 Cette barre de recherche est incomplète, en effet les différents articles n'ont pas de pages attitrées et la barre de recherche ne peut donc pas mener vers ces dernières. La barre de recherche peut cependant proposer les mots ou groupes de mots choisis dans js/suggestions.js comme ci-dessous :
