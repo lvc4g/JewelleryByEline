@@ -1,5 +1,5 @@
 # JewelleryByEline
-###### site NSI créé par DARROU Raphaël, DAVION--JOUFFRE Josselin, GARRISI Jacques et NADIFI Sirine.
+###### site et porjet de NSI réalisé par DARROU Raphaël, DAVION--JOUFFRE Josselin, GARRISI Jacques et NADIFI Sirine.
 
 ### Jewellery By Eline est un projet de boutique de vente en ligne de bagues pour la marque Jewellery By Eline. 
 Cette marque déjà existante s'est dévelopée sur Instagram et ses deux créatrices souhaitent étendre leur activité par l'intermédiaire d'un site de vente en ligne.
