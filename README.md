@@ -19,7 +19,7 @@ c'est la page comportant toutes les soldes.
 - Nous découvrir :
 C'est la page comportant des informations sur la marque avec notemment toute son histoire.
 
-### Le site contient plusieurs effets écrits en Javascript :
+### Le site contient plusieurs effets écrits en Javascript ou CSS :
 #### - Un carrousel : 
 Un carrousel est un type de module de site Web qui fait la rotation du contenu d'une manière similaire à celle d'un diaporama, soit par une commande de l'utilisateur ou par des transitions temporisées.
 
@@ -47,7 +47,7 @@ Cette barre de recherche propose les mots ou groupes de mots choisis dans js/sug
 ```
 
 #### - L'affichage des tailles sur les bagues :
-Cet effet permet d'afficher les différentes tailles proposées (S/M/L). Il se produit lorsque la souris passe sur l'image d'un article. Lorsque cela arrive, l'image se grise et les tailles disponibles de l'article sont indiquées. Cela permet à l'utilisateur de voir directement si la taille qu'il porte est disponible.
+Cet effet permet d'afficher les différentes tailles proposées (XS/S/M/L). Il se produit lorsque la souris passe sur l'image d'un article. Lorsque cela arrive, l'image se grise et les tailles disponibles de l'article sont indiquées. Cela permet à l'utilisateur de voir directement si la taille qu'il porte est disponible.
 
 #### - Le tableau "à craie" :
 Cet effet permet à l'utilisateur de s'amuser à dessiner avec sa souris la bague de ses rêves (ou ce qu'il veut). Unique et ludique, cette fonctionnalité contribue à la relation client que souhaient avoir les deux créatrices. À terme, il serait amélioré pour permettre de stocker les différents dessins et de réaliser des concours dans lesquels chaque utilisateur pourrait donner son avis afin d'élir le plus beau dessin. Ces concours permettraient de créer une réelle proximité avec les clients.
