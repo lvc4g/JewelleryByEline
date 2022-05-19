@@ -6,7 +6,6 @@
 Page d'acceuil et page principale.
 - Femme :
 Page comportant des bijoux pour les femmes.
-- Soldes :
 - Homme : 
 Page comportant des bijoux pour les hommes.
 - Soldes :
