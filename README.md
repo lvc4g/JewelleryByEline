@@ -18,7 +18,7 @@
 ##### Cette barre de recherche est incomplète, en effet les différents articles n'ont pas de pages attitrées et la barre de recherche ne peut donc pas mener vers ces dernières. La barre de recherche peut cependant proposer les mots ou groupes de mots choisis dans js/suggestions.js 
 
 ```js
- <div class="autocom-box">
-          <!-- here list are inserted from javascript -->
-        </div>
+ let suggestions = [
+    "Soldes",
+ ];
 ```
