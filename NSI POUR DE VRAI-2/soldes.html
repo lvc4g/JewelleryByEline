@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name ="viewport" content="width=device-width, initial-scales=1.0">
+	<title>Jewellery By Eline</title>
+	<link rel="stylesheet" href="soldes.css">
+	<script src="https://kit.fontawesome.com/bc2f571643.js" crossorigin="anonymous"></script>
+</head>
+<body>
+	<!-- Barre de navigation-->
+		<nav>
+			<h1>Jewellery By Eline</h1>
+			<div class="onglets">
+				<p class="link">Accueil</p>
+				<p class="link">Femme</p>
+				<p class="link">Homme</p>
+				<p class="link">Soldes</p>
+				<p class="link">Nous découvrir</p>
+				<form>
+                    <div class="wrapper">
+                      <div class="search-input">
+                        <a href="" target="_blank" hidden></a>
+                        <input type="text" placeholder="Rechercher..">
+                        <div class="autocom-box">
+                          <!-- here list are inserted from javascript -->
+                        </div>
+                        <div class="icon"><i class="fas fa-search"></i></div>
+                      </div>
+                    </div>
+                    <script src="js/suggestions.js"></script>
+                    <script src="js/script.js"></script>
+				</form>
+				<p><i class="fa-solid fa-heart"></i></p>
+				<p><i class="fa-solid fa-cart-arrow-down"></i></p>
+			</div>
+		</nav> 
+		
+	
+
+	
+	<!-- Section principale -->
+		<section class="main">
+			<!-- Bannière --->
+				<h1 class="ml15">
+					<span class="word">SOYEZ</span>
+					<span class="word">MALINS !</span>
+				</h1>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+				<script>
+					anime.timeline({loop: true})
+						.add({
+							targets: '.ml15 .word',
+							scale: [14,1],
+							opacity: [0,1],
+							easing: "easeOutCirc",
+							duration: 800,
+							delay: (el, i) => 800 * i
+						}).add({
+							targets: '.ml15',
+							opacity: 0,
+							duration: 1000,
+							easing: "easeOutExpo",
+							delay: 1000
+						});
+				</script>
+			
+			<!-- Fin bannière --->
+			<h4>Soldes</h4>
+			<!--Toutes les cartes -->
+				<div class="cards">
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_6.jfif">
+						</div>
+						<div class="card-header">
+								<h4 class="title">LA VOTRE</h4>
+								<h4 class="price">1.50 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+				
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_7.jfif">
+						</div>
+						<div class="card-header">
+								<h4 class="title">L'ANCIENNE</h4>
+								<h4 class="price">4.50 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_1.webp">
+						</div>
+						<div class="card-header">
+								<h4 class="title">LA VOITURE</h4>
+								<h4 class="price">7.22 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+					
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_4.webp">
+						</div>
+						<div class="card-header">
+								<h4 class="title">LA SOMBRE</h4>
+								<h4 class="price">6.99 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+					
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_8.jfif">
+						</div>
+						<div class="card-header">
+								<h4 class="title">LA ROSE</h4>
+								<h4 class="price">3.75 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+					
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_9.jfif">
+						</div>
+						<div class="card-header">
+								<h4 class="title">LA VIOLETTE</h4>
+								<h4 class="price">0.50 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+					
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_11.jfif">
+						</div>
+						<div class="card-header">
+								<h4 class="title">L'ARGENTEE</h4>
+								<h4 class="price">3.89 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+					
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_10.jfif">
+						</div>
+						<div class="card-header">
+								<h4 class="title">LA DOREE</h4>
+								<h4 class="price">18.50 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+					
+					<div class="card">
+						<div class="detail">
+							<div class="fadebox">
+								<div class="title text">Taille en stock : S / M / L </div>
+							</div>
+							<img src="soldes_12.jfif">
+						</div>
+						<div class="card-header">
+								<h4 class="title">L'ARGENTEE +</h4>
+								<h4 class="price">6.37 €</h4>
+						</div>
+						<div class="card-body">
+								<p>Bague pour femme</p>
+						</div>
+					</div>
+			
+
+
+					
+					
+				</div>
+			<!-- Fin de toutes les cartes -->
+		</section>
+
+
+	<!-- Fin section principale -->
+	<!-- footer -->
+		<footer>
+			<p>&copy; <a class="lien" href="tel:+33767285968">Contactez-nous au 07 66 28 59 68</a></p>
+			<div class="social-media">
+				<p><a class="lien" href="https://fr-fr.facebook.com/" target="_blank"><i class="fa-brands fa-facebook"></i></a></p>
+				<p><a class="lien" href="https://twitter.com/" target="_blank"><i class="fa-brands fa-twitter"></i></a></p>
+				<p><a class="lien" href="https://www.instagram.com/jewellerybyeline_/" target="_blank"><i class="fa-brands fa-instagram"></i></a></p>
+				<p><a class="lien" href="https://fr.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></p>
+			</div>
+		</footer>
+	<!-- footer-->
+
+
+
+
+
+
+</body>
+</html>
