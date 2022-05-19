@@ -29,10 +29,19 @@ Cet effet permet d'afficher les différentes tailles proposées (S/M/L). Il se p
 #### - Le tableau "à craie" :
 Cet effet permet à l'utilisateur de s'amuser à déssiner avec sa souris la bague de ses rêves (ou ce qu'il veut). Unique et ludique, cette fonctionnalité contribue à la relation client que souhaient avoir les deux créatrices. À terme, il serait amélioré pour permettre de stocker les différents dessins et de réaliser des concours dans lesquels chaque utilisateur pourrait donner son avis afin d'élir le plus beau dessin. Ces concours permettraient de créer une réelle proximité avec les clients.
 
-#### -
+#### - La carte du produit le plus tendance :
+Cette carte attractive permet de mettre en avant le produit le plus commandé du mois et donc d'inciter les utilisateurs à commander pour être tendance.
 
-```js
-<div class="fadebox">
-  <div class="title text">Taille en stock : S / M / L </div>
-</div>
+
+#### - POP UP ! :
+Cet effet informe l'utilisateur qu'il a de belles soldes à ne pas manquer. Les soldes sont en réalité essentiellement constituées de produits invendus. Il permet donc encore d'inciter à la consommation mais cible les uitilisateurs moins fortunés. Une partie du css du pop est affichée ci-dessous :
+
+```css
+.popup{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: trasnlate(-50%, -50%);
+	display : none;
+}
 ```
