@@ -2,16 +2,20 @@
 ###### Site et projet de NSI réalisé par DARROU Raphaël, DAVION--JOUFFRE Josselin, GARRISI Jacques et NADIFI Sirine en 1ère 06 ..
 
 ### Jewellery By Eline est un projet de boutique de vente en ligne de bagues pour la marque Jewellery By Eline. 
-Cette marque déjà existante s'est dévelopée sur Instagram et ses deux créatrices souhaitent étendre leur activité par l'intermédiaire d'un site de vente en ligne.
-### Ce projet doit répondre à plusieurs attentes :
-- Avoir une apparence comparable aux plus beaux sites d'e-commerce.
-- Comporter un bon nombre de fonctions javascript.
-- Représenter l'image de la marque déjà dévelopée sur instagram par les deux créatrices.
-- Être simple d'utilisation.
-- Comporter des éléments interactifs.
+Cette marque déjà existante s'est développée sur Instagram (https://www.instagram.com/jewellerybyeline_/)et ses deux créatrices souhaitent étendre leur activité par l'intermédiaire d'un site de vente en ligne.
+
+```mermaid
+graph
+A{Ce projet doit répondre à plusieurs attentes :} --> B[Avoir une apparence comparable aux plus beaux sites d'e-commerce.]
+    A --> D[Comporter un bon nombre de fonctions javascript.]
+    A --> C(Comporter des éléments interactifs.)
+    A --> E(Représenter l'image de la marque déjà développée sur instagram.)
+    A --> F(Être simple d'utilisation.)
+```
+
 ### Le site contient 5 pages :
-- Accueil :
-C'est la page d'accueil ou la page principale du site.
+- Acceuil :
+C'est la page d'acceuil ou la page principale du site.
 - Femme :
 C'est la page comportant des bijoux pour les femmes.
 - Homme : 
@@ -36,6 +40,15 @@ Il est utilisé pour prévisualiser l'ambiance du site et certains bijoux choisi
 	<img src="bouton.png" class="bouton" id="g"/>
 </div>
 ```
+
+```html
+}
+#container{
+	width:800px;
+	height:400px;
+}
+```
+
 
 
 #### - Une barre de recherche avec saisie semi-automatique :
@@ -71,5 +84,3 @@ Cet effet informe l'utilisateur qu'il y a de belles soldes à ne pas manquer. Le
 }
 ```
 ## BIENTÔT EN LIGNE !!
-	........................................................................................................................
-######														https://jewellery-by-eline.garrisi.net
