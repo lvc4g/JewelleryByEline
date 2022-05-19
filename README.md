@@ -10,8 +10,8 @@ sert à....
 - Nous découvrir :
 
 ### Le site contient aussi plusieurs effets écrits en Javascript :
-#### - Un carrousel :
-##### ou type de module de site Web qui fait la rotation du contenu d'une manière similaire à celle d'un diaporama, soit par une commande de l'utilisateur ou par des transitions temporisées.
+#### - Un carrousel : 
+(ou type de module de site Web qui fait la rotation du contenu d'une manière similaire à celle d'un diaporama, soit par une commande de l'utilisateur ou par des transitions temporisées.)
 Il est utilisé pour prévisualiser l'ambiance du site et certains bijoux choisis.
 
 #### - Une barre de recherche avec saisie semi-automatique :
