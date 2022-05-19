@@ -10,8 +10,8 @@ Cette marque déjà existante s'est dévelopée sur Instagram et ses deux créat
 - Être simple d'utilisation.
 - Comporter des éléments interactifs.
 ### Le site contient 5 pages :
-- Acceuil :
-C'est la page d'acceuil ou la page principale du site.
+- Accueil :
+C'est la page d'accueil ou la page principale du site.
 - Femme :
 C'est la page comportant des bijoux pour les femmes.
 - Homme : 
