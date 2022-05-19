@@ -3,15 +3,21 @@
 ### C'est un projet de boutique en ligne de bagues pour la marque Jewellery By Eline. 
 #### Le site contient 5 pages toutes différentes :
 - Acceuil :
-sert à....
+Page d'acceuil et page principale.
 - Femme :
-- Homme : 
+Page comportant des bijoux pour les femmes.
 - Soldes :
+- Homme : 
+Page comportant des bijoux pour les hommes.
+- Soldes :
+Page comportant toutes les soldes.
 - Nous découvrir :
+Page comportant des informations sur la marque avec notemment toute son histoire.
 
 ### Le site contient aussi plusieurs effets écrits en Javascript :
 #### - Un carrousel : 
 (ou type de module de site Web qui fait la rotation du contenu d'une manière similaire à celle d'un diaporama, soit par une commande de l'utilisateur ou par des transitions temporisées.)
+
 Il est utilisé pour prévisualiser l'ambiance du site et certains bijoux choisis.
 
 #### - Une barre de recherche avec saisie semi-automatique :
