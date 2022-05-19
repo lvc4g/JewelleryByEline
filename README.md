@@ -2,6 +2,7 @@
 ###### site NSI créé par 
 
 ### Jewellery By Eline est un projet de boutique de vente en ligne de bagues pour la marque Jewellery By Eline. 
+Cette marque déjà existante s'est dévelopée sur Instagram et ses deux créatrices souhaitent étendre leur activité par l'intermédiaire d'un site de vente en ligne.
 ### Ce projet doit répondre à plusieurs attentes :
 - Avoir une apparence comparable aux plus beaux sites d'e-commerce.
 - Comporter un bon nombre de fonctions javascript.
