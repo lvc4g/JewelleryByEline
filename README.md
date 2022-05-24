@@ -29,7 +29,7 @@ C'est la page comportant des informations sur la marque avec notemment toute son
 #### - Un carrousel : 
 Un carrousel est un type de module de site Web qui fait la rotation du contenu d'une manière similaire à celle d'un diaporama, soit par une commande de l'utilisateur ou par des transitions temporisées.
 
-Il est utilisé pour prévisualiser l'ambiance du site et certains bijoux choisis. On trouve ci-dessous le début de l'html du carrousel :
+Il est utilisé pour prévisualiser l'ambiance du site et certains bijoux choisis. On trouve ci-dessous le début de l'html et ce qui correspond dans le css du carrousel :
 
 
 ```html
