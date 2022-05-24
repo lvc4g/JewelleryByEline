@@ -91,4 +91,3 @@ Cette page est la première version et il y a donc quelques bugs, par exemple, l
 
 ## BIENTÔT EN LIGNE !!
 
-envoie les noms...(jojo)
