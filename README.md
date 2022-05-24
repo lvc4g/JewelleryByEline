@@ -86,7 +86,7 @@ Cet effet informe l'utilisateur qu'il y a de belles soldes à ne pas manquer. Le
 
 ### - Informations complémentaires :
 
-Cette page est la première version et il y a donc quelques bugs, par exemple, la barre de recherche ne facilite pour le moment pas la naviguation de l'utilisateur et mène en attendant sur la page google prévue. Ce bug est en cours de réparation.
+Cette page est la première version et il y a donc quelques bugs, par exemple, la barre de recherche ne facilite pour le moment pas la naviguation de l'utilisateur et mène en attendant sur la page google demandée. Ce bug est en cours de réparation.
 
 
 ## BIENTÔT EN LIGNE !!
