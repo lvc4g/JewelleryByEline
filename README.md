@@ -1,7 +1,7 @@
-# JewelleryByEline
+# JewelleryOnline
 ###### Site et projet de NSI réalisé par DARROU Raphaël, DAVION--JOUFFRE Josselin, GARRISI Jacques et NADIFI Sirine en 1ère 06 ..
 
-### Jewellery By Eline est un projet de boutique de vente en ligne de bagues pour la marque Jewellery By Eline. 
+### JewelleryOnline est un projet de boutique de vente en ligne de bagues pour la marque Jewellery By Eline. 
 Cette marque déjà existante s'est développée sur Instagram (https://www.instagram.com/jewellerybyeline_/ )et ses deux créatrices souhaitent étendre leur activité par l'intermédiaire d'un site de vente en ligne.
 
 ```mermaid
