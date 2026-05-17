@@ -27,9 +27,11 @@ jobs:
     - name: Exécuter le script
       run: python trace2.py
     
-    - name: Uploader les résultats
+    - name: Commiter le graphique
       if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: trace-output
-        path: trace_output.png
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add trace_output.png
+        git commit -m "Update trace_output.png" || echo "Rien à commiter"
+        git push
