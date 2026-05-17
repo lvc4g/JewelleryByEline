@@ -197,8 +197,8 @@ for i in range(18):
     axs[i, 1].semilogy(freqs[:40], spectre[:40], color='tab:red')
     axs[i, 1].grid(True, linestyle='--')
 # Étiquettes d'axes avec unités : colonnes gauche/droite
-axs[0, 0].set_ylabel("Amplitude (a.u.)")
-axs[0, 1].set_ylabel("Puissance spectrale (a.u.)")
+axs[0, 0].set_ylabel("Amplitude")
+axs[0, 1].set_ylabel("Puissance spectrale")
 axs[-1, 0].set_xlabel("Temps (s)")
 axs[-1, 1].set_xlabel("Fréquence (Hz)")
 plt.tight_layout()
