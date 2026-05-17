@@ -76,4 +76,31 @@ t_deforme = np.where(t < t_passage,
                      t + 0.3 * (t - t_passage)**2,  # Approche ralentie
                      t + 1.5 * (t - t_passage))     # Éloignement rapide
 
-f_accel = f_reference + 2450 * np.
+f_accel = f_reference + 2450 * np.exp(-((t_deforme - t_passage) / 0.6) ** 2)
+ax_accel.plot(t, ajouter_bruit(f_accel), color="tab:red", label="Accélération")
+ax_accel.set_title("Trace 8 : Passage avec accélération")
+ax_accel.legend(loc="upper right")
+ax_accel.grid(True)
+
+
+# --- TRACE 9 : Décélération puis arrêt / faux plat ---
+# Le véhicule ralentit brusquement au-dessus du capteur puis repart
+ax_ambigu3 = axs[2, 2]
+f_ambigu3 = f_reference + 2300 * np.exp(-((t - 3.5) / 0.5) ** 2) + 1200 * np.exp(-((t - 5.0) / 1.2) ** 2)
+ax_ambigu3.plot(t, ajouter_bruit(f_ambigu3), color="tab:purple", label="Profil asymétrique")
+ax_ambigu3.set_title("Trace 9 : Vitesse variable / Traînante")
+ax_ambigu3.legend(loc="upper right")
+ax_ambigu3.grid(True)
+
+# Configuration et habillage des axes
+for ax in axs.flat:
+    ax.set_xlim(0, 8)
+    ax.set_ylim(99500, 103500) # Fixe la même échelle de fréquence partout
+
+for ax in axs[2, :]:
+    ax.set_xlabel("Temps (s)")
+for ax in axs[:, 0]:
+    ax.set_ylabel("Fréquence (Hz)")
+
+plt.tight_layout()
+plt.show()
