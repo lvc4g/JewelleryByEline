@@ -110,7 +110,9 @@ y_train_reels = np.array([labels_reels[idx] for idx in indices_train])
 # 2. K-MEANS CONTRAINT AVEC MULTI-INITIALISATIONS
 # =====================================================================
 n_clusters = 3
-taille_cluster = 2
+# Déterminer dynamiquement le nombre de slots par centre pour
+# garantir au moins autant de slots que d'échantillons d'entraînement.
+taille_cluster = int(np.ceil(len(X_train) / n_clusters))
 n_init = 30
 
 meilleure_inertie = float('inf')
