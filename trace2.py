@@ -93,4 +93,5 @@ for ax in axs[:, 0]:
     ax.set_ylabel("Fréquence (Hz)")
 
 plt.tight_layout()
-plt.show()
+plt.savefig('trace_output.png', dpi=150, bbox_inches='tight')
+print("Graphique sauvegardé : trace_output.png")
