@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib
-matplotlib.use('Agg') 
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # =====================================================================
-# 1. GÉNÉRATION DES DONNÉES & EXTRACTION (Identique)
+# 1. GÉNÉRATION DES DONNÉES & EXTRACTION
 # =====================================================================
-feux_hz = 100  
+feux_hz = 100
 t = np.linspace(0, 8, 8 * feux_hz)
 f_reference = 100000
 
@@ -20,28 +20,70 @@ labels_reels = []
 noms_signaux = []
 
 # Voitures (Classe 0)
-signaux.append(profil(t, 1.5, 0.30, 2100))
-signaux.append(profil(t, 6.0, 0.35, 2300))
-signaux.append(profil(t, 3.5, 0.32, 2150))
-labels_reels.extend([0, 0, 0])
-noms_signaux.extend(["Voiture 1", "Voiture 2", "Voiture 3 (Test)"])
+voitures = [
+    {"t_c": 1.5, "larg": 0.30, "amp": 2100},
+    {"t_c": 6.0, "larg": 0.35, "amp": 2300},
+    {"t_c": 3.5, "larg": 0.32, "amp": 2150},
+    {"t_c": 2.8, "larg": 0.28, "amp": 2250},
+    {"t_c": 5.2, "larg": 0.34, "amp": 2180},
+    {"t_c": 4.1, "larg": 0.26, "amp": 2330}
+]
+for i, p in enumerate(voitures):
+    signaux.append(profil(t, p["t_c"], p["larg"], p["amp"]))
+    labels_reels.append(0)
+    noms_signaux.append(f"Voiture {i+1}{' (Test)' if i >= 4 else ''}")
 
 # Camions (Classe 1)
-signaux.append(profil(t, 5.5, 1.1, 2600))
-signaux.append(profil(t, 2.0, 0.9, 2500))
-signaux.append(profil(t, 4.0, 1.2, 2700))
-labels_reels.extend([1, 1, 1])
-noms_signaux.extend(["Camion 1", "Camion 2", "Camion 3 (Test)"])
+camions = [
+    {"t_c": 5.5, "larg": 1.10, "amp": 2600},
+    {"t_c": 2.0, "larg": 0.90, "amp": 2500},
+    {"t_c": 4.0, "larg": 1.20, "amp": 2700},
+    {"t_c": 3.0, "larg": 1.30, "amp": 2550},
+    {"t_c": 6.5, "larg": 0.95, "amp": 2650},
+    {"t_c": 4.8, "larg": 1.05, "amp": 2750}
+]
+for i, p in enumerate(camions):
+    signaux.append(profil(t, p["t_c"], p["larg"], p["amp"]))
+    labels_reels.append(1)
+    noms_signaux.append(f"Camion {i+1}{' (Test)' if i >= 4 else ''}")
 
 # Intermédiaires (Classe 2)
-signaux.append(profil(t, 2.5, 0.6, 2400)) 
-t_deforme = np.where(t < 5.0, t + 0.3 * (t - 5.0)**2, t + 1.5 * (t - 5.0))
-signaux.append(profil(t_deforme, 5.0, 0.6, 2450)) 
-signaux.append(profil(t, 3.0, 0.4, 2000) + profil(t, 4.8, 0.4, 1900)) 
-labels_reels.extend([2, 2, 2])
-noms_signaux.extend(["Interm. 1", "Interm. 2", "Interm. 3 (Test)"])
+interms = [
+    {"type": "hybride", "t_c": 4.0, "larg": 0.60, "amp": 2400},
+    {"type": "accel", "t_c": 5.0, "larg": 0.60, "amp": 2450},
+    {"type": "double", "t_c": 0.0, "larg": 0.00, "amp": 0.00},
+    {"type": "decroissance", "t_c": 3.5, "larg": 0.50, "amp": 2300},
+    {"type": "oscillation", "t_c": 4.0, "larg": 0.70, "amp": 2350},
+    {"type": "plateau", "t_c": 4.0, "larg": 1.50, "amp": 2250}
+]
+for i, p in enumerate(interms):
+    if p["type"] == "hybride":
+        s = profil(t, p["t_c"], p["larg"], p["amp"]) + 0.0
+        title = "Interm. 1"
+    elif p["type"] == "accel":
+        t_deforme = np.where(t < p["t_c"],
+                             t + 0.3 * (t - p["t_c"])**2,
+                             t + 1.5 * (t - p["t_c"]))
+        s = profil(t_deforme, p["t_c"], p["larg"], p["amp"])
+        title = "Interm. 2"
+    elif p["type"] == "double":
+        s = profil(t, 3.0, 0.40, 2000) + profil(t, 4.8, 0.40, 1900)
+        title = "Interm. 3"
+    elif p["type"] == "decroissance":
+        s = profil(t, p["t_c"], p["larg"], p["amp"]) + 1200 * np.exp(-((t - 5.0) / 1.20) ** 2)
+        title = "Interm. 4"
+    elif p["type"] == "oscillation":
+        s = profil(t, p["t_c"], p["larg"], p["amp"]) * (1 + 0.2 * np.sin(5 * t))
+        title = "Interm. 5"
+    else:
+        s = profil(t, p["t_c"], p["larg"], p["amp"]) + 300 * np.exp(-((t - 4.0) / 0.80) ** 2)
+        title = "Interm. 6"
+    signaux.append(s)
+    labels_reels.append(2)
+    noms_signaux.append(f"{title}{' (Test)' if i >= 4 else ''}")
 
 signaux = np.array(signaux)
+
 
 def extraire_features_allure(signal):
     signal_centre = signal - np.mean(signal)
@@ -57,8 +99,8 @@ features = np.array([extraire_features_allure(s) for s in signaux])
 features_2d = features[:, 1:]
 features_norm = (features_2d - features_2d.mean(axis=0)) / (features_2d.std(axis=0) + 1e-6)
 
-indices_train = [0, 1,  3, 4,  6, 7]  
-indices_test  = [2, 5, 8]             
+indices_train = [0, 1, 2, 3, 6, 7, 8, 9, 12, 13, 14, 15]
+indices_test = [4, 5, 10, 11, 16, 17]
 
 X_train = features_norm[indices_train]
 X_test = features_norm[indices_test]
@@ -68,14 +110,16 @@ y_train_reels = np.array([labels_reels[idx] for idx in indices_train])
 # 2. K-MEANS CONTRAINT AVEC MULTI-INITIALISATIONS
 # =====================================================================
 n_clusters = 3
-taille_cluster = 2
+# Déterminer dynamiquement le nombre de slots par centre pour
+# garantir au moins autant de slots que d'échantillons d'entraînement.
+taille_cluster = int(np.ceil(len(X_train) / n_clusters))
 n_init = 30
 
 meilleure_inertie = float('inf')
 meilleurs_centres = None
 meilleurs_labels_train_bruts = None
 
-np.random.seed(24) 
+np.random.seed(24)
 
 for init in range(n_init):
     centres_courants = X_train[np.random.choice(len(X_train), n_clusters, replace=False)]
@@ -84,14 +128,16 @@ for init in range(n_init):
         matrice_distances = np.linalg.norm(X_train[:, np.newaxis, :] - centres_étendus[np.newaxis, :, :], axis=2)
         _, indices_slots = linear_sum_assignment(matrice_distances)
         labels_train_courants = indices_slots // taille_cluster
-        
+
         nouveaux_centres = np.zeros_like(centres_courants)
         for c in range(n_clusters):
             points_du_cluster = X_train[labels_train_courants == c]
-            if len(points_du_cluster) > 0: nouveaux_centres[c] = points_du_cluster.mean(axis=0)
-        if np.allclose(centres_courants, nouveaux_centres): break
+            if len(points_du_cluster) > 0:
+                nouveaux_centres[c] = points_du_cluster.mean(axis=0)
+        if np.allclose(centres_courants, nouveaux_centres):
+            break
         centres_courants = nouveaux_centres
-        
+
     inertie_courante = sum(np.sum(np.linalg.norm(X_train[labels_train_courants == c] - centres_courants[c], axis=1)**2) for c in range(n_clusters))
     if inertie_courante < meilleure_inertie:
         meilleure_inertie = inertie_courante
@@ -101,50 +147,46 @@ for init in range(n_init):
 # =====================================================================
 # 3. ALIGNEMENT CRUCIAL DES LABELS (RÉSOLUTION DU BUG)
 # =====================================================================
-# On calcule quelle classe réelle est majoritaire dans chaque cluster brut du K-Means
 mapping_centres = {}
 for c in range(n_clusters):
     classes_dans_cluster = y_train_reels[meilleurs_labels_train_bruts == c]
-    # On prend la classe la plus fréquente dans ce cluster
     classe_majoritaire = np.bincount(classes_dans_cluster).argmax()
     mapping_centres[c] = classe_majoritaire
 
-# Ré-ordonner les centres et recalculer les labels d'entraînement selon les vraies classes (0, 1, 2)
 centres_alignes = np.zeros_like(meilleurs_centres)
 for k_id, vrai_id in mapping_centres.items():
     centres_alignes[vrai_id] = meilleurs_centres[k_id]
 
-# Les labels d'entraînement réalignés correspondent maintenant directement aux classes réelles
 labels_train_corriges = np.array([mapping_centres[l] for l in meilleurs_labels_train_bruts])
 
-# Variance interne basée sur les centres réalignés
 std_clusters = np.zeros_like(centres_alignes)
 epsilon = 1e-2
 for c in range(n_clusters):
     points_du_cluster = X_train[labels_train_corriges == c]
     std_clusters[c] = np.std(points_du_cluster, axis=0) + epsilon if len(points_du_cluster) > 1 else np.ones(X_train.shape[1]) * epsilon
 
-# Fonction de prédiction utilisant les centres alignés
+
 def predire_points(points, centres, std_clusters):
     preds = []
     for p in points:
         dists = [np.sqrt(np.sum(((p - centres[c]) / std_clusters[c]) ** 2)) for c in range(n_clusters)]
-        preds.append(np.argmin(dists)) # Renvoie directement la vraie classe (0, 1, ou 2)
+        preds.append(np.argmin(dists))
     return np.array(preds)
 
 labels_test_corriges = predire_points(X_test, centres_alignes, std_clusters)
 
-# Reconstruction du vecteur de prédiction total (Train + Test) parfaitement synchronisé
-predictions_totale = np.zeros(9, dtype=int)
-for i, idx in enumerate(indices_train): predictions_totale[idx] = labels_train_corriges[i]
-for i, idx in enumerate(indices_test):  predictions_totale[idx] = labels_test_corriges[i]
+predictions_totale = np.zeros(18, dtype=int)
+for i, idx in enumerate(indices_train):
+    predictions_totale[idx] = labels_train_corriges[i]
+for i, idx in enumerate(indices_test):
+    predictions_totale[idx] = labels_test_corriges[i]
 
 # =====================================================================
-# 4. SAUVEGARDE IMAGE 1 : TRACES & FFT (Identique)
+# 4. SAUVEGARDE IMAGE 1 : TRACES & FFT
 # =====================================================================
-fig, axs = plt.subplots(9, 2, figsize=(14, 20))
+fig, axs = plt.subplots(18, 2, figsize=(14, 36))
 fig.suptitle("Signaux Temporels & Analyse Fréquentielle (FFT)", fontsize=16, fontweight='bold', y=0.99)
-for i in range(9):
+for i in range(18):
     axs[i, 0].plot(t, f_reference + signaux[i], color='black', alpha=0.8)
     axs[i, 0].set_title(f"Trace {i+1} : {noms_signaux[i]}", fontsize=10, loc='left', fontweight='bold')
     axs[i, 0].set_xlim(0, 8)
@@ -161,11 +203,11 @@ plt.savefig('signaux_fourier.png', dpi=150, bbox_inches='tight')
 plt.close()
 
 # =====================================================================
-# 5. SAUVEGARDE IMAGE 2 : CLUSTERS ET ZONES DE DÉCISION CORRIGÉES
+# 5. SAUVEGARDE IMAGE 2 : CLUSTERS ET ZONES DE DÉCISION
 # =====================================================================
 plt.figure(figsize=(11, 7))
 couleurs_classes = ['tab:blue', 'tab:orange', 'tab:purple']
-cm_fond = matplotlib.colors.ListedColormap(['#d9e6f2', '#fcead1', '#f0e6f5']) 
+cm_fond = matplotlib.colors.ListedColormap(['#d9e6f2', '#fcead1', '#f0e6f5'])
 
 x_min, x_max = features_norm[:, 0].min() - 0.7, features_norm[:, 0].max() + 0.7
 y_min, y_max = features_norm[:, 1].min() - 0.7, features_norm[:, 1].max() + 0.7
@@ -176,16 +218,16 @@ Z = predire_points(grille_points, centres_alignes, std_clusters)
 Z = Z.reshape(xx.shape)
 
 plt.contourf(xx, yy, Z, cmap=cm_fond, alpha=1.0)
-
-for idx in range(9):
+for idx in range(18):
     f_p = features_norm[idx]
     c_pred = predictions_totale[idx]
     c_reel = labels_reels[idx]
     mark = 'X' if idx in indices_test else 'o'
     taille = 260 if idx in indices_test else 180
     lbl = "Donnée Test (X)" if idx in indices_test else "Donnée Train (•)"
-    plt.scatter(f_p[0], f_p[1], c=couleurs_classes[c_pred], marker=mark, s=taille, 
-                edgecolors=couleurs_classes[c_reel], linewidths=3.5, zorder=3, label=lbl if idx in [2,0] else "")
+    plt.scatter(f_p[0], f_p[1], c=couleurs_classes[c_pred], marker=mark, s=taille,
+                edgecolors=couleurs_classes[c_reel], linewidths=3.5, zorder=3,
+                label=lbl if idx in [4, 10, 16] else "")
 
 plt.scatter(centres_alignes[:, 0], centres_alignes[:, 1], color='red', marker='*', s=350, edgecolors='black', zorder=4, label='Centres Synchro')
 plt.title("Espace Décisionnel de Fourier (Synchronisation des Index Réglée)", fontsize=13, fontweight='bold')
@@ -202,7 +244,7 @@ plt.savefig('features_clusters.png', dpi=150, bbox_inches='tight')
 plt.close()
 
 # =====================================================================
-# 6. SAUVEGARDE IMAGE 3 : MATRICE DE CONFUSION PARFAITE
+# 6. SAUVEGARDE IMAGE 3 : MATRICE DE CONFUSION
 # =====================================================================
 y_true_total = [labels_reels[idx] for idx in indices_train] + [labels_reels[idx] for idx in indices_test]
 y_pred_total = list(labels_train_corriges) + list(labels_test_corriges)
@@ -214,4 +256,4 @@ plt.title("Matrice de Confusion (100% Diagonale)")
 plt.savefig('confusion_matrix.png', dpi=150, bbox_inches='tight')
 plt.close()
 
-print("Bug résolu. Les index de l'inférence sont verrouillés sur les index réels. La matrice est désormais strictement diagonale.")
+print("Execution terminée. Les fichiers signaux_fourier.png, features_clusters.png et confusion_matrix.png ont été sauvegardés.")
