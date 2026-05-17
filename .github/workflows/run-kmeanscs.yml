@@ -47,10 +47,21 @@ jobs:
           echo "confusion_matrix.png ajouté"
         fi
         
+        if [ -f signaux_fourier.png ]; then
+          git add signaux_fourier.png
+          echo "signaux_fourier.png ajouté"
+        fi
+        
+        if [ -f features_clusters.png ]; then
+          git add features_clusters.png
+          echo "features_clusters.png ajouté"
+        fi
+        
         # Commiter et pousser si des fichiers ont été modifiés
         if git diff --cached --quiet; then
           echo "Aucun fichier à commiter"
         else
           git commit -m "Update generated PNG files from kmeanscs.py"
+          git pull --rebase origin main
           git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
         fi
