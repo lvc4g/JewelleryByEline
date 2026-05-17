@@ -1,97 +1,79 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Configuration du temps (8 secondes)
-feux_hz = 100  # Fréquence d'échantillonnage
+# Configuration du temps (8 secondes, 100 Hz)
+feux_hz = 100  
 t = np.linspace(0, 8, 8 * feux_hz)
-f_reference = 100000  # Fréquence de base (100 kHz)
+f_reference = 100000  # 100 kHz
 
-# Fonction pour générer le profil de passage (courants de Foucault)
-def profil_passage(t, t_centre, largeur, amplitude):
-    return amplitude * np.exp(-((t - t_centre) / largeur) ** 2)
-
-# Création d'une grille de 3 lignes et 3 colonnes (9 graphiques au total)
-fig, axs = plt.subplots(3, 3, figsize=(15, 12), sharex=True, sharey=True)
-fig.suptitle("Analyse des signatures de fréquence - 9 Traces Distinctes", fontsize=16, fontweight='bold')
-
-# Définition d'un bruit de mesure standard et réaliste pour tous les graphes
+# Fonction de bruit standard pour le réalisme
 def ajouter_bruit(signal):
-    return signal + np.random.normal(0, 25, size=len(t))
+    return signal + np.random.normal(0, 20, size=len(t))
+
+# Création de la grille 3x3
+fig, axs = plt.subplots(3, 3, figsize=(15, 12), sharex=True, sharey=True)
+fig.suptitle("Signatures de fréquence : Profils de Véhicules et Cas Ambigus", fontsize=16, fontweight='bold')
 
 # =====================================================================
-# 1. LIGNE 1 : PETITES PLAQUES (VOITURES)
-# Signature : Amplitude modérée, temps de passage court
+# 1. LIGNE 1 : PLAQUES COURTES (VOITURES)
+# Amplitudes proches des camions, mais durées très brèves
 # =====================================================================
 parametres_voitures = [
-    {"t_c": 3.0, "larg": 0.35, "amp": 1400},
-    {"t_c": 4.5, "larg": 0.40, "amp": 1600},
-    {"t_c": 2.0, "larg": 0.38, "amp": 1350}
+    {"t_c": 3.0, "larg": 0.30, "amp": 2100},
+    {"t_c": 4.5, "larg": 0.35, "amp": 2300},
+    {"t_c": 2.0, "larg": 0.32, "amp": 2150}
 ]
 
 for i, p in enumerate(parametres_voitures):
     ax = axs[0, i]
-    f = f_reference + profil_passage(t, p["t_c"], p["larg"], p["amp"])
-    ax.plot(t, ajouter_bruit(f), color="tab:blue", label=f"Voiture {i+1}")
-    ax.set_title(f"Trace {i+1} : Petite plaque")
+    f = f_reference + p["amp"] * np.exp(-((t - p["t_c"]) / p["larg"]) ** 2)
+    ax.plot(t, ajouter_bruit(f), color="tab:blue", label="Plaque courte")
+    ax.set_title(f"Trace {i+1} : Voiture")
     ax.legend(loc="upper right")
     ax.grid(True)
 
 # =====================================================================
 # 2. LIGNE 2 : PLAQUES LONGUES (CAMIONS)
-# Signature : Forte amplitude, temps de passage étalé (plateau)
+# Amplitudes similaires aux voitures, mais étalées dans le temps
 # =====================================================================
 parametres_camions = [
-    {"t_c": 4.0, "larg": 1.3, "amp": 3200},
-    {"t_c": 3.5, "larg": 1.1, "amp": 2900},
-    {"t_c": 5.0, "larg": 1.4, "amp": 3400}
+    {"t_c": 4.0, "larg": 1.1, "amp": 2600},
+    {"t_c": 3.5, "larg": 0.9, "amp": 2500},
+    {"t_c": 5.0, "larg": 1.2, "amp": 2700}
 ]
 
 for i, p in enumerate(parametres_camions):
     ax = axs[1, i]
-    f = f_reference + profil_passage(t, p["t_c"], p["larg"], p["amp"])
-    ax.plot(t, ajouter_bruit(f), color="tab:orange", label=f"Camion {i+1}")
-    ax.set_title(f"Trace {i+4} : Plaque longue")
+    f = f_reference + p["amp"] * np.exp(-((t - p["t_c"]) / p["larg"]) ** 2)
+    ax.plot(t, ajouter_bruit(f), color="tab:orange", label="Plaque longue")
+    ax.set_title(f"Trace {i+4} : Camion")
     ax.legend(loc="upper right")
     ax.grid(True)
 
 # =====================================================================
-# 3. LIGNE 3 : TRACES AMBIGUËS (ENTRE-DEUX / INCLASSABLES)
-# Signature : Formes géométriques réelles mais bâtardes ou superposées
+# 3. LIGNE 3 : TRACES INTERMÉDIAIRES / AMBIGUËS
 # =====================================================================
-ax_ambigu = axs[2, 0]
-# Cas 1 : Amplitude d'un camion mais largeur d'une voiture
-f_ambigu1 = f_reference + profil_passage(t, 4.0, 0.4, 3100)
-ax_ambigu.plot(t, ajouter_bruit(f_ambigu1), color="tab:purple", label="Hybride A")
-ax_ambigu.set_title("Trace 7 : Profil hybride")
-ax_ambigu.legend(loc="upper right")
-ax_ambigu.grid(True)
 
-ax_ambigu = axs[2, 1]
-# Cas 2 : Deux petites plaques très rapprochées (Deux voitures ou un camion avec remorque ?)
-f_ambigu2 = f_reference + profil_passage(t, 3.2, 0.3, 1500) + profil_passage(t, 4.3, 0.3, 1400)
-ax_ambigu.plot(t, ajouter_bruit(f_ambigu2), color="tab:purple", label="Double pic")
-ax_ambigu.set_title("Trace 8 : Double passage")
-ax_ambigu.legend(loc="upper right")
-ax_ambigu.grid(True)
+# --- TRACE 7 : Durée intermédiaire + Amplitude hybride ---
+# Pile entre la longueur d'une voiture lente et d'un camion rapide
+ax_ambigu1 = axs[2, 0]
+f_ambigu1 = f_reference + 2400 * np.exp(-((t - 4.0) / 0.6) ** 2)
+ax_ambigu1.plot(t, ajouter_bruit(f_ambigu1), color="tab:purple", label="Hybride")
+ax_ambigu1.set_title("Trace 7 : Taille/Vitesse indéterminée")
+ax_ambigu1.legend(loc="upper right")
+ax_ambigu1.grid(True)
 
-ax_ambigu = axs[2, 2]
-# Cas 3 : Une traînée très étalée mais à très faible amplitude (Plaque éloignée ou grand véhicule peu conducteur ?)
-f_ambigu3 = f_reference + profil_passage(t, 4.0, 1.8, 1200)
-ax_ambigu.plot(t, ajouter_bruit(f_ambigu3), color="tab:purple", label="Hybride B")
-ax_ambigu.set_title("Trace 9 : Profil étalé bas")
-ax_ambigu.legend(loc="upper right")
-ax_ambigu.grid(True)
 
-# Configuration globale des étiquettes des axes
-for ax in axs.flat:
-    ax.set_xlim(0, 8)
+# --- TRACE 8 : ACCÉLÉRATION NON NULLE (Asymétrie forte) ---
+# Le véhicule entre lentement (pente douce) et repart très vite (pente raide)
+ax_accel = axs[2, 1]
+t_passage = 4.0
+f_accel = np.zeros_like(t)
 
-# Ajouter les labels uniquement sur les bords extérieurs pour ne pas surcharger
-for ax in axs[2, :]:
-    ax.set_xlabel("Temps (s)")
-for ax in axs[:, 0]:
-    ax.set_ylabel("Fréquence (Hz)")
+# On applique une distorsion du temps pour simuler l'accélération
+# t_deforme ralentit avant 4s et accélère après 4s
+t_deforme = np.where(t < t_passage, 
+                     t + 0.3 * (t - t_passage)**2,  # Approche ralentie
+                     t + 1.5 * (t - t_passage))     # Éloignement rapide
 
-plt.tight_layout()
-plt.savefig('trace_output.png', dpi=150, bbox_inches='tight')
-print("Graphique sauvegardé : trace_output.png")
+f_accel = f_reference + 2450 * np.
