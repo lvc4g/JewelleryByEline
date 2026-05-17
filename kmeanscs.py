@@ -210,6 +210,7 @@ plt.close()
 # =====================================================================
 plt.figure(figsize=(11, 7))
 couleurs_classes = ['tab:blue', 'tab:orange', 'tab:purple']
+couleurs_classes_cont = ['tab:lightblue', 'tab:lightorange', 'tab:lightpurple']
 cm_fond = matplotlib.colors.ListedColormap(['#d9e6f2', '#fcead1', '#f0e6f5'])
 
 x_min, x_max = features_norm[:, 0].min() - 0.7, features_norm[:, 0].max() + 0.7
@@ -235,7 +236,7 @@ for c in range(n_clusters):
         ys = features_norm[train_idxs, 1]
         preds = [predictions_totale[i] for i in train_idxs]
         plt.scatter(xs, ys, c=[couleurs_classes[p] for p in preds], marker='o', s=100,
-                    edgecolors=couleurs_classes[c], linewidths=0.5, zorder=3,
+                    edgecolors=couleurs_classes_cont[c], linewidths=1, zorder=3,
                     label=f'Classe {c} Train')
 
     # Points de test
@@ -244,7 +245,7 @@ for c in range(n_clusters):
         ys = features_norm[test_idxs, 1]
         preds = [predictions_totale[i] for i in test_idxs]
         plt.scatter(xs, ys, c=[couleurs_classes[p] for p in preds], marker='X', s=180,
-                    edgecolors=couleurs_classes[c], linewidths=0.5, zorder=3,
+                    edgecolors=couleurs_classes_cont[c], linewidths=1, zorder=3,
                     label=f'Classe {c} Test')
 
 plt.scatter(centres_alignes[:, 0], centres_alignes[:, 1], color='red', marker='*', s=300, edgecolors='black', zorder=4, label='Centres Synchro')
