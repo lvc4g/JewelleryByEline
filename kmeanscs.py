@@ -53,7 +53,9 @@ def extraire_features_allure(signal):
     return amp_max, basses_freq, moyennes_freq
 
 features = np.array([extraire_features_allure(s) for s in signaux])
-features_norm = (features - features.mean(axis=0)) / (features.std(axis=0) + 1e-6)
+# On utilise uniquement les deux dimensions FFT pour l'espace de décision 2D
+features_2d = features[:, 1:]
+features_norm = (features_2d - features_2d.mean(axis=0)) / (features_2d.std(axis=0) + 1e-6)
 
 indices_train = [0, 1,  3, 4,  6, 7]  
 indices_test  = [2, 5, 8]             
@@ -165,11 +167,11 @@ plt.figure(figsize=(11, 7))
 couleurs_classes = ['tab:blue', 'tab:orange', 'tab:purple']
 cm_fond = matplotlib.colors.ListedColormap(['#d9e6f2', '#fcead1', '#f0e6f5']) 
 
-x_min, x_max = features_norm[:, 1].min() - 0.7, features_norm[:, 1].max() + 0.7
-y_min, y_max = features_norm[:, 2].min() - 0.7, features_norm[:, 2].max() + 0.7
+x_min, x_max = features_norm[:, 0].min() - 0.7, features_norm[:, 0].max() + 0.7
+y_min, y_max = features_norm[:, 1].min() - 0.7, features_norm[:, 1].max() + 0.7
 xx, yy = np.meshgrid(np.linspace(x_min, x_max, 300), np.linspace(y_min, y_max, 300))
 
-grille_points = np.c_[np.zeros(xx.ravel().shape), xx.ravel(), yy.ravel()]
+grille_points = np.c_[xx.ravel(), yy.ravel()]
 Z = predire_points(grille_points, centres_alignes, std_clusters)
 Z = Z.reshape(xx.shape)
 
@@ -182,10 +184,10 @@ for idx in range(9):
     mark = 'X' if idx in indices_test else 'o'
     taille = 260 if idx in indices_test else 180
     lbl = "Donnée Test (X)" if idx in indices_test else "Donnée Train (•)"
-    plt.scatter(f_p[1], f_p[2], c=couleurs_classes[c_pred], marker=mark, s=taille, 
+    plt.scatter(f_p[0], f_p[1], c=couleurs_classes[c_pred], marker=mark, s=taille, 
                 edgecolors=couleurs_classes[c_reel], linewidths=3.5, zorder=3, label=lbl if idx in [2,0] else "")
 
-plt.scatter(centres_alignes[:, 1], centres_alignes[:, 2], color='red', marker='*', s=350, edgecolors='black', zorder=4, label='Centres Synchro')
+plt.scatter(centres_alignes[:, 0], centres_alignes[:, 1], color='red', marker='*', s=350, edgecolors='black', zorder=4, label='Centres Synchro')
 plt.title("Espace Décisionnel de Fourier (Synchronisation des Index Réglée)", fontsize=13, fontweight='bold')
 plt.xlabel("Énergie Basses Fréquences")
 plt.ylabel("Énergie Moyennes Fréquences")
