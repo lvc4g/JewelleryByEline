@@ -235,7 +235,7 @@ for c in range(n_clusters):
         ys = features_norm[train_idxs, 1]
         preds = [predictions_totale[i] for i in train_idxs]
         plt.scatter(xs, ys, c=[couleurs_classes[p] for p in preds], marker='o', s=180,
-                    edgecolors=couleurs_classes[c], linewidths=3.5, zorder=3,
+                    edgecolors=couleurs_classes[c], linewidths=1.5, zorder=3,
                     label=f'Classe {c} Train')
 
     # Points de test
@@ -244,7 +244,7 @@ for c in range(n_clusters):
         ys = features_norm[test_idxs, 1]
         preds = [predictions_totale[i] for i in test_idxs]
         plt.scatter(xs, ys, c=[couleurs_classes[p] for p in preds], marker='X', s=260,
-                    edgecolors=couleurs_classes[c], linewidths=3.5, zorder=3,
+                    edgecolors=couleurs_classes[c], linewidths=1.5, zorder=3,
                     label=f'Classe {c} Test')
 
 plt.scatter(centres_alignes[:, 0], centres_alignes[:, 1], color='red', marker='*', s=350, edgecolors='black', zorder=4, label='Centres Synchro')
