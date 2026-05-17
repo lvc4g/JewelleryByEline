@@ -7,7 +7,7 @@ from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # =====================================================================
-# 1. GÉNÉRATION DES DONNÉES ET EXTRACTION DES FEATURES (Identique)
+# 1. GÉNÉRATION DES DONNÉES (Avec retards volontaires pour piéger l'algo)
 # =====================================================================
 feux_hz = 100  
 t = np.linspace(0, 8, 8 * feux_hz)
@@ -19,36 +19,54 @@ def profil(t, t_c, larg, amp):
 signaux = []
 labels_reels = []
 
-# Voitures (Regroupées, faible variance)
-signaux.append(profil(t, 3.0, 0.30, 2100))
-signaux.append(profil(t, 4.5, 0.35, 2300))
-signaux.append(profil(t, 2.0, 0.32, 2150))
+# Voitures (Passages à des moments très différents : 1.5s, 6.0s, 3.5s)
+signaux.append(profil(t, 1.5, 0.30, 2100))
+signaux.append(profil(t, 6.0, 0.35, 2300))
+signaux.append(profil(t, 3.5, 0.32, 2150))
 labels_reels.extend([0, 0, 0])
 
-# Camions (Plus étalés, forte variance)
-signaux.append(profil(t, 4.0, 1.1, 2600))
-signaux.append(profil(t, 3.5, 0.9, 2500))
-signaux.append(profil(t, 5.0, 1.2, 2700))
+# Camions (Passages à 5.5s, 2.0s, 4.0s)
+signaux.append(profil(t, 5.5, 1.1, 2600))
+signaux.append(profil(t, 2.0, 0.9, 2500))
+signaux.append(profil(t, 4.0, 1.2, 2700))
 labels_reels.extend([1, 1, 1])
 
-# Intermédiaires / Ambigus
-signaux.append(profil(t, 4.0, 0.6, 2400)) 
-t_deforme = np.where(t < 4.0, t + 0.3 * (t - 4.0)**2, t + 1.5 * (t - 4.0))
-signaux.append(profil(t_deforme, 4.0, 0.6, 2450)) 
-signaux.append(profil(t, 3.5, 0.5, 2300) + profil(t, 5.0, 1.2, 1200)) 
+# Intermédiaires / Ambigus (Moments variables)
+signaux.append(profil(t, 2.5, 0.6, 2400)) 
+t_deforme = np.where(t < 5.0, t + 0.3 * (t - 5.0)**2, t + 1.5 * (t - 5.0))
+signaux.append(profil(t_deforme, 5.0, 0.6, 2450)) # Accélération centrée à 5s
+signaux.append(profil(t, 3.0, 0.5, 2300) + profil(t, 4.5, 1.2, 1200)) 
 labels_reels.extend([2, 2, 2])
 
 signaux = np.array(signaux)
 
-def extraire_features(signal, t):
+# =====================================================================
+# 2. EXTRACTION DE FEATURES INVARIANTES AU RETARD (Moments Centrés)
+# =====================================================================
+def extraire_features_invariantes(signal, t):
     amp_max = np.max(signal)
-    if amp_max == 0: return 0, 0
-    indices_dessus = np.where(signal >= amp_max / 2)[0]
-    largeur = t[indices_dessus[-1]] - t[indices_dessus[0]] if len(indices_dessus) > 0 else 0
-    return amp_max, largeur
+    if amp_max == 0: return 0, 0, 0
+    
+    # On normalise le signal comme une distribution de probabilité temporelle
+    aire = np.sum(signal)
+    prob_t = signal / aire
+    
+    # 1. Temps moyen du passage (Le centre de gravité, qu'on va utiliser pour centrer)
+    t_moyen = np.sum(t * prob_t)
+    
+    # 2. Variance temporelle (Indépendante de t_moyen -> invariance au retard)
+    variance_t = np.sum(((t - t_moyen) ** 2) * prob_t)
+    largeur_temporelle = np.sqrt(variance_t)
+    
+    # 3. Asymétrie (Skewness) temporelle : utile pour détecter l'accélération (Trace 8)
+    skewness_t = np.sum(((t - t_moyen) ** 3) * prob_t) / (variance_t ** 1.5 + 1e-6)
+    
+    return amp_max, largeur_temporelle, skewness_t
 
-features = np.array([extraire_features(s, t) for s in signaux])
-features_norm = (features - features.mean(axis=0)) / features.std(axis=0)
+features = np.array([extraire_features_invariantes(s, t) for s in signaux])
+
+# Normalisation (Z-score)
+features_norm = (features - features.mean(axis=0)) / (features.std(axis=0) + 1e-6)
 
 indices_train = [0, 1,  3, 4,  6, 7]  
 indices_test  = [2, 5, 8]             
@@ -57,36 +75,66 @@ X_train = features_norm[indices_train]
 X_test = features_norm[indices_test]
 
 # =====================================================================
-# 2. ENTRAÎNEMENT DU K-MEANS CONTRAINT
+# 3. K-MEANS CONTRAINT AVEC MULTI-INITIALISATIONS (n_init = 20)
 # =====================================================================
 n_clusters = 3
 taille_cluster = 2
-n_iterations = 10
+n_iterations_max = 15
+n_init = 20  # Nombre de relances pour trouver l'optimum global
 
-np.random.seed(42)
-centres = X_train[np.random.choice(len(X_train), n_clusters, replace=False)]
+meilleure_inertie = float('inf')
+meilleurs_centres = None
+meilleurs_labels_train = None
 
-for _ in range(n_iterations):
-    centres_étendus = np.repeat(centres, taille_cluster, axis=0)
-    matrice_distances = np.linalg.norm(X_train[:, np.newaxis, :] - centres_étendus[np.newaxis, :, :], axis=2)
-    _, indices_slots = linear_sum_assignment(matrice_distances)
-    labels_train = indices_slots // taille_cluster
+np.random.seed(42) # Pour la reproductibilité globale, mais les sous-tirages varient
+
+for init in range(n_init):
+    # Sélection aléatoire de 3 centres de départ parmi les données d'entraînement
+    centres_init = X_train[np.random.choice(len(X_train), n_clusters, replace=False)]
+    centres_courants = centres_init.copy()
     
-    nouveaux_centres = np.zeros_like(centres)
+    for _ in range(n_iterations_max):
+        centres_étendus = np.repeat(centres_courants, taille_cluster, axis=0)
+        matrice_distances = np.linalg.norm(X_train[:, np.newaxis, :] - centres_étendus[np.newaxis, :, :], axis=2)
+        
+        # Assignation optimale (contrainte de taille)
+        _, indices_slots = linear_sum_assignment(matrice_distances)
+        labels_train_courants = indices_slots // taille_cluster
+        
+        # Recalcul des centres
+        nouveaux_centres = np.zeros_like(centres_courants)
+        for c in range(n_clusters):
+            points_du_cluster = X_train[labels_train_courants == c]
+            if len(points_du_cluster) > 0:
+                nouveaux_centres[c] = points_du_cluster.mean(axis=0)
+                
+        if np.allclose(centres_courants, nouveaux_centres):
+            break
+        centres_courants = nouveaux_centres
+        
+    # Calcul de l'inertie de cette tentative (somme des distances au carré)
+    inertie_courante = 0
     for c in range(n_clusters):
-        points_du_cluster = X_train[labels_train == c]
+        points_du_cluster = X_train[labels_train_courants == c]
         if len(points_du_cluster) > 0:
-            nouveaux_centres[c] = points_du_cluster.mean(axis=0)
-    if np.allclose(centres, nouveaux_centres): break
-    centres = nouveaux_centres
+            inertie_courante += np.sum(np.linalg.norm(points_du_cluster - centres_courants[c], axis=1) ** 2)
+            
+    # On garde la meilleure exécution
+    if inertie_courante < meilleure_inertie:
+        meilleure_inertie = inertie_courante
+        meilleurs_centres = centres_courants
+        meilleurs_labels_train = labels_train_courants
+
+centres = meilleurs_centres
+labels_train = meilleurs_labels_train
+
+print(f"Meilleure inertie trouvée après {n_init} relances : {meilleure_inertie:.4f}")
 
 # =====================================================================
-# 3. CALCUL DE LA LARGEUR (DISPERSION) DE CHAQUE CLUSTER
+# 4. CALCUL DE LA VARIANCE DES CLUSTERS ET INFERENCE TEST PONDÉRÉE
 # =====================================================================
-# Pour chaque dimension (Amplitude et Largeur), on calcule l'écart-type interne du cluster.
-# On ajoute une petite valeur epsilon (1e-6) pour éviter une division par zéro si un cluster est ultra-serré.
 std_clusters = np.zeros_like(centres)
-epsilon = 1e-6
+epsilon = 1e-3 # Légèrement augmenté pour stabiliser les dimensions à faible variance
 
 for c in range(n_clusters):
     points_du_cluster = X_train[labels_train == c]
@@ -95,21 +143,13 @@ for c in range(n_clusters):
     else:
         std_clusters[c] = np.ones(X_train.shape[1]) * epsilon
 
-# =====================================================================
-# 4. INFERENCE / TEST PONDÉRÉE PAR LA LARGEUR DES CLUSTERS
-# =====================================================================
 labels_test = []
 for point_test in X_test:
     distances_ponderees = []
     for c in range(n_clusters):
-        centre = centres[c]
-        std = std_clusters[c]
-        
-        # Distance Euclidienne normalisée par l'écart-type de chaque coordonnée
-        # Formule : racine( somme( ((x_i - centre_i) / std_i)^2 ) )
-        dist_normalisee = np.sqrt(np.sum(((point_test - centre) / std) ** 2))
+        # Distance de Mahalanobis diagonale (pondérée par l'écart-type du cluster)
+        dist_normalisee = np.sqrt(np.sum(((point_test - centres[c]) / std_clusters[c]) ** 2))
         distances_ponderees.append(dist_normalisee)
-        
     labels_test.append(np.argmin(distances_ponderees))
 labels_test = np.array(labels_test)
 
@@ -125,7 +165,7 @@ y_pred = list(labels_train) + list(labels_test)
 noms_classes = ['Voiture', 'Camion', 'Intermédiaire']
 cm = confusion_matrix(y_true, y_pred)
 
-# Graphique 1 : Espace des features
+# Graphique 1 : Visualisation 2D des deux features principales (Amplitude vs Largeur temporelle)
 plt.figure(figsize=(10, 6))
 Couleurs = ['tab:blue', 'tab:orange', 'tab:purple']
 for c in range(n_clusters):
@@ -133,10 +173,10 @@ for c in range(n_clusters):
     plt.scatter(points[:, 1], points[:, 0], color=Couleurs[c], marker='o', s=150, label=f'Train Cluster {c}')
 for i, c in enumerate(labels_test):
     plt.scatter(X_test[i, 1], X_test[i, 0], color=Couleurs[c], marker='X', s=200, edgecolors='black', label=f'Test -> Cluster {c}' if i==c else "")
-plt.scatter(centres[:, 1], centres[:, 0], color='red', marker='*', s=300, label='Centres')
-plt.title("Classification avec Distance Pondérée par la Variance des Clusters")
+plt.scatter(centres[:, 1], centres[:, 0], color='red', marker='*', s=300, label='Centres Optimaux')
+plt.title("Classification Robuste au Retard Temporel (Multi-initialisé)")
 plt.ylabel("Amplitude Max (Normalisée)")
-plt.xlabel("Largeur du signal (Normalisée)")
+plt.xlabel("Étalement Temporel Invariant (Normalisé)")
 plt.grid(True)
 handles, labels = plt.gca().get_legend_handles_labels()
 by_label = dict(zip(labels, handles))
@@ -148,8 +188,8 @@ plt.close()
 plt.figure(figsize=(6, 6))
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=noms_classes)
 disp.plot(cmap=plt.cm.Blues, ax=plt.gca(), values_format='d')
-plt.title("Matrice de Confusion Pondérée")
+plt.title("Matrice de Confusion (Insensible au Retard)")
 plt.savefig('confusion_matrix.png', dpi=150, bbox_inches='tight')
 plt.close()
 
-print("Graphiques 'trace_output.png' et 'confusion_matrix.png' mis à jour et sauvegardés.")
+print("Graphiques mis à jour. L'impact du déphasage temporel est désormais neutralisé.")
