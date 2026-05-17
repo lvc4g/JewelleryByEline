@@ -196,6 +196,9 @@ for i in range(18):
     spectre = np.abs(np.fft.rfft(sig_c)) ** 2
     axs[i, 1].semilogy(freqs[:40], spectre[:40], color='tab:red')
     axs[i, 1].grid(True, linestyle='--')
+# Étiquettes d'axes avec unités : colonnes gauche/droite
+axs[0, 0].set_ylabel("Amplitude (a.u.)")
+axs[0, 1].set_ylabel("Puissance spectrale (a.u.)")
 axs[-1, 0].set_xlabel("Temps (s)")
 axs[-1, 1].set_xlabel("Fréquence (Hz)")
 plt.tight_layout()
@@ -246,6 +249,7 @@ for c in range(n_clusters):
 
 plt.scatter(centres_alignes[:, 0], centres_alignes[:, 1], color='red', marker='*', s=350, edgecolors='black', zorder=4, label='Centres Synchro')
 plt.title("Espace Décisionnel de Fourier (Synchronisation des Index Réglée)", fontsize=13, fontweight='bold')
+# Les features ont été normalisées => unités en z-score
 plt.xlabel("Énergie Basses Fréquences")
 plt.ylabel("Énergie Moyennes Fréquences")
 plt.xlim(x_min, x_max)
@@ -267,7 +271,10 @@ y_pred_total = list(labels_train_corriges) + list(labels_test_corriges)
 plt.figure(figsize=(6, 6))
 disp = ConfusionMatrixDisplay(confusion_matrix=confusion_matrix(y_true_total, y_pred_total), display_labels=['Voiture', 'Camion', 'Intermédiaire'])
 disp.plot(cmap=plt.cm.Blues, ax=plt.gca(), values_format='d')
-plt.title("Matrice de Confusion (100% Diagonale)")
+# Indiquer une unité pour la matrice (comptage d'exemples)
+plt.xlabel("Prédictions")
+plt.ylabel("Vraies classes")
+plt.title("Matrice de Confusion")
 plt.savefig('confusion_matrix.png', dpi=150, bbox_inches='tight')
 plt.close()
 
