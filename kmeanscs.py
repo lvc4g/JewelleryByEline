@@ -218,16 +218,31 @@ Z = predire_points(grille_points, centres_alignes, std_clusters)
 Z = Z.reshape(xx.shape)
 
 plt.contourf(xx, yy, Z, cmap=cm_fond, alpha=1.0)
-for idx in range(18):
-    f_p = features_norm[idx]
-    c_pred = predictions_totale[idx]
-    c_reel = labels_reels[idx]
-    mark = 'X' if idx in indices_test else 'o'
-    taille = 260 if idx in indices_test else 180
-    lbl = "Donnée Test (X)" if idx in indices_test else "Donnée Train (•)"
-    plt.scatter(f_p[0], f_p[1], c=couleurs_classes[c_pred], marker=mark, s=taille,
-                edgecolors=couleurs_classes[c_reel], linewidths=3.5, zorder=3,
-                label=lbl if idx in [4, 10, 16] else "")
+
+# Tracer explicitement les points par classe pour s'assurer que toutes les
+# données (4 entraînement + 2 test par classe) sont affichées clairement.
+for c in range(n_clusters):
+    # indices d'entraînement et de test pour la classe réelle c
+    train_idxs = [i for i in indices_train if labels_reels[i] == c]
+    test_idxs = [i for i in indices_test if labels_reels[i] == c]
+
+    # Points d'entraînement
+    if train_idxs:
+        xs = features_norm[train_idxs, 0]
+        ys = features_norm[train_idxs, 1]
+        preds = [predictions_totale[i] for i in train_idxs]
+        plt.scatter(xs, ys, c=[couleurs_classes[p] for p in preds], marker='o', s=180,
+                    edgecolors=couleurs_classes[c], linewidths=3.5, zorder=3,
+                    label=f'Classe {c} Train')
+
+    # Points de test
+    if test_idxs:
+        xs = features_norm[test_idxs, 0]
+        ys = features_norm[test_idxs, 1]
+        preds = [predictions_totale[i] for i in test_idxs]
+        plt.scatter(xs, ys, c=[couleurs_classes[p] for p in preds], marker='X', s=260,
+                    edgecolors=couleurs_classes[c], linewidths=3.5, zorder=3,
+                    label=f'Classe {c} Test')
 
 plt.scatter(centres_alignes[:, 0], centres_alignes[:, 1], color='red', marker='*', s=350, edgecolors='black', zorder=4, label='Centres Synchro')
 plt.title("Espace Décisionnel de Fourier (Synchronisation des Index Réglée)", fontsize=13, fontweight='bold')
