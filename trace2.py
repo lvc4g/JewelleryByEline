@@ -10,8 +10,8 @@ f_reference = 100000  # 100 kHz
 def ajouter_bruit(signal):
     return signal + np.random.normal(0, 20, size=len(t))
 
-# Création de la grille 3x3
-fig, axs = plt.subplots(3, 3, figsize=(15, 12), sharex=True, sharey=True)
+# Création de la grille 3x6
+fig, axs = plt.subplots(3, 6, figsize=(24, 12), sharex=True, sharey=True)
 fig.suptitle("Signatures de fréquence : Profils de Véhicules et Cas Ambigus", fontsize=16, fontweight='bold')
 
 # =====================================================================
@@ -21,7 +21,10 @@ fig.suptitle("Signatures de fréquence : Profils de Véhicules et Cas Ambigus", 
 parametres_voitures = [
     {"t_c": 3.0, "larg": 0.30, "amp": 2100},
     {"t_c": 4.5, "larg": 0.35, "amp": 2300},
-    {"t_c": 2.0, "larg": 0.32, "amp": 2150}
+    {"t_c": 2.0, "larg": 0.32, "amp": 2150},
+    {"t_c": 3.8, "larg": 0.28, "amp": 2250},
+    {"t_c": 5.5, "larg": 0.33, "amp": 2200},
+    {"t_c": 2.8, "larg": 0.26, "amp": 2350}
 ]
 
 for i, p in enumerate(parametres_voitures):
@@ -39,14 +42,17 @@ for i, p in enumerate(parametres_voitures):
 parametres_camions = [
     {"t_c": 4.0, "larg": 1.1, "amp": 2600},
     {"t_c": 3.5, "larg": 0.9, "amp": 2500},
-    {"t_c": 5.0, "larg": 1.2, "amp": 2700}
+    {"t_c": 5.0, "larg": 1.2, "amp": 2700},
+    {"t_c": 2.5, "larg": 1.3, "amp": 2550},
+    {"t_c": 6.5, "larg": 0.95, "amp": 2650},
+    {"t_c": 4.8, "larg": 1.05, "amp": 2750}
 ]
 
 for i, p in enumerate(parametres_camions):
     ax = axs[1, i]
     f = f_reference + p["amp"] * np.exp(-((t - p["t_c"]) / p["larg"]) ** 2)
     ax.plot(t, ajouter_bruit(f), color="tab:orange", label="Plaque longue")
-    ax.set_title(f"Trace {i+4} : Camion")
+    ax.set_title(f"Trace {i+7} : Camion")
     ax.legend(loc="upper right")
     ax.grid(True)
 
@@ -54,48 +60,56 @@ for i, p in enumerate(parametres_camions):
 # 3. LIGNE 3 : TRACES INTERMÉDIAIRES / AMBIGUËS
 # =====================================================================
 
-# --- TRACE 7 : Durée intermédiaire + Amplitude hybride ---
-# Pile entre la longueur d'une voiture lente et d'un camion rapide
-ax_ambigu1 = axs[2, 0]
-f_ambigu1 = f_reference + 2400 * np.exp(-((t - 4.0) / 0.6) ** 2)
-ax_ambigu1.plot(t, ajouter_bruit(f_ambigu1), color="tab:purple", label="Hybride")
-ax_ambigu1.set_title("Trace 7 : Taille/Vitesse indéterminée")
-ax_ambigu1.legend(loc="upper right")
-ax_ambigu1.grid(True)
+parametres_ambi = [
+    {"type": "hybride", "t_c": 4.0, "larg": 0.6, "amp": 2400},
+    {"type": "accel", "t_c": 4.0, "larg": 0.6, "amp": 2450},
+    {"type": "double", "t_c": 0.0, "larg": 0.0, "amp": 0.0},
+    {"type": "decroissance", "t_c": 4.0, "larg": 0.5, "amp": 2300},
+    {"type": "oscillation", "t_c": 4.0, "larg": 0.7, "amp": 2350},
+    {"type": "plateau", "t_c": 4.0, "larg": 1.5, "amp": 2250}
+]
 
+for i, p in enumerate(parametres_ambi):
+    ax = axs[2, i]
+    if p["type"] == "hybride":
+        f = f_reference + p["amp"] * np.exp(-((t - p["t_c"]) / p["larg"]) ** 2)
+        title = "Trace 13 : Hybride"
+        color = "tab:purple"
+    elif p["type"] == "accel":
+        t_passage = p["t_c"]
+        t_deforme = np.where(t < t_passage, 
+                             t + 0.3 * (t - t_passage)**2,
+                             t + 1.5 * (t - t_passage))
+        f = f_reference + p["amp"] * np.exp(-((t_deforme - t_passage) / p["larg"]) ** 2)
+        title = "Trace 14 : Accélération"
+        color = "tab:red"
+    elif p["type"] == "double":
+        f = f_reference + 2000 * np.exp(-((t - 3.0) / 0.4) ** 2) + 1900 * np.exp(-((t - 4.8) / 0.4) ** 2)
+        title = "Trace 15 : Double pic"
+        color = "tab:purple"
+    elif p["type"] == "decroissance":
+        f = f_reference + p["amp"] * np.exp(-((t - 3.5) / 0.5) ** 2) + 1200 * np.exp(-((t - 5.0) / 1.2) ** 2)
+        title = "Trace 16 : Décélération"
+        color = "tab:purple"
+    elif p["type"] == "oscillation":
+        f = f_reference + p["amp"] * np.exp(-((t - p["t_c"]) / p["larg"]) ** 2) * (1 + 0.2 * np.sin(5 * t))
+        title = "Trace 17 : Oscillation"
+        color = "tab:purple"
+    else:
+        f = f_reference + p["amp"] * np.exp(-((t - p["t_c"]) / p["larg"]) ** 2)
+        title = "Trace 18 : Plateau"
+        f += 300 * np.exp(-((t - 4.0) / 0.8) ** 2)
+        color = "tab:purple"
 
-# --- TRACE 8 : ACCÉLÉRATION NON NULLE (Asymétrie forte) ---
-# Le véhicule entre lentement (pente douce) et repart très vite (pente raide)
-ax_accel = axs[2, 1]
-t_passage = 4.0
-f_accel = np.zeros_like(t)
-
-# On applique une distorsion du temps pour simuler l'accélération
-# t_deforme ralentit avant 4s et accélère après 4s
-t_deforme = np.where(t < t_passage, 
-                     t + 0.3 * (t - t_passage)**2,  # Approche ralentie
-                     t + 1.5 * (t - t_passage))     # Éloignement rapide
-
-f_accel = f_reference + 2450 * np.exp(-((t_deforme - t_passage) / 0.6) ** 2)
-ax_accel.plot(t, ajouter_bruit(f_accel), color="tab:red", label="Accélération")
-ax_accel.set_title("Trace 8 : Passage avec accélération")
-ax_accel.legend(loc="upper right")
-ax_accel.grid(True)
-
-
-# --- TRACE 9 : Décélération puis arrêt / faux plat ---
-# Le véhicule ralentit brusquement au-dessus du capteur puis repart
-ax_ambigu3 = axs[2, 2]
-f_ambigu3 = f_reference + 2300 * np.exp(-((t - 3.5) / 0.5) ** 2) + 1200 * np.exp(-((t - 5.0) / 1.2) ** 2)
-ax_ambigu3.plot(t, ajouter_bruit(f_ambigu3), color="tab:purple", label="Profil asymétrique")
-ax_ambigu3.set_title("Trace 9 : Vitesse variable / Traînante")
-ax_ambigu3.legend(loc="upper right")
-ax_ambigu3.grid(True)
+    ax.plot(t, ajouter_bruit(f), color=color, label=title)
+    ax.set_title(title)
+    ax.legend(loc="upper right")
+    ax.grid(True)
 
 # Configuration et habillage des axes
 for ax in axs.flat:
     ax.set_xlim(0, 8)
-    ax.set_ylim(99500, 103500) # Fixe la même échelle de fréquence partout
+    ax.set_ylim(99500, 103500)
 
 for ax in axs[2, :]:
     ax.set_xlabel("Temps (s)")
