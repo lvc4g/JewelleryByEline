@@ -210,7 +210,7 @@ plt.close()
 # =====================================================================
 plt.figure(figsize=(11, 7))
 couleurs_classes = ['tab:blue', 'tab:orange', 'tab:purple']
-couleurs_classes_cont = ['tab:lightblue', 'tab:lightorange', 'tab:lightpurple']
+couleurs_classes_cont = ['tab:azure', 'tab:coral', 'tab:orchid']
 cm_fond = matplotlib.colors.ListedColormap(['#d9e6f2', '#fcead1', '#f0e6f5'])
 
 x_min, x_max = features_norm[:, 0].min() - 0.7, features_norm[:, 0].max() + 0.7
