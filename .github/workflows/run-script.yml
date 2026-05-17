@@ -27,11 +27,18 @@ jobs:
     - name: Exécuter le script
       run: python trace2.py
     
+    - name: Vérifier les fichiers générés
+      run: ls -la *.png 2>/dev/null || echo "Aucun fichier PNG trouvé"
+    
     - name: Commiter le graphique
       if: always()
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add trace_output.png
-        git commit -m "Update trace_output.png" || echo "Rien à commiter"
-        git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+        if [ -f trace_output.png ]; then
+          git add trace_output.png
+          git commit -m "Update trace_output.png"
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+        else
+          echo "Fichier trace_output.png non généré"
+        fi
